@@ -19,32 +19,187 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserActivity> UserActivities { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<Story> Stories { get; set; }
+    public DbSet<MarkedWord> MarkedWords { get; set; }
+    public DbSet<UserCard> UserCards { get; set; }
 
-protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // Configure entity relationships and properties
-        modelBuilder.Entity<Content>()
-            .HasOne(c => c.User)
-            .WithMany(u => u.Contents)
-            .HasForeignKey(c => c.UserId);
-        modelBuilder.Entity<Content>()
-            .HasOne(c => c.BackgroundMusic)
-            .WithMany()
-            .HasForeignKey(c => c.BackgroundMusicId);
+
+        // User configuration
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.UserRole)
+            .WithMany(r => r.Users)
+            .HasForeignKey(u => u.UserRoleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Contents)
             .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Likes)
             .WithOne(l => l.User)
-            .HasForeignKey(l => l.UserId);
+            .HasForeignKey(l => l.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Comments)
             .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UserActivities)
+            .WithOne(a => a.User)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UserCards)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Story configuration
+        modelBuilder.Entity<Story>()
+            .HasOne(s => s.Admin)
+            .WithMany()
+            .HasForeignKey(s => s.AdminId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Story>()
+            .HasMany(s => s.MarkedWords)
+            .WithOne(w => w.Story)
+            .HasForeignKey(w => w.StoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // MarkedWord configuration
+        modelBuilder.Entity<MarkedWord>()
+            .HasOne(w => w.Story)
+            .WithMany(s => s.MarkedWords)
+            .HasForeignKey(w => w.StoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MarkedWord>()
+            .HasMany(w => w.UserCards)
+            .WithOne(c => c.MarkedWord)
+            .HasForeignKey(c => c.MarkedWordId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // UserCard configuration
+        modelBuilder.Entity<UserCard>()
+            .HasOne(c => c.User)
+            .WithMany(u => u.UserCards)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserCard>()
+            .HasOne(c => c.MarkedWord)
+            .WithMany(w => w.UserCards)
+            .HasForeignKey(c => c.MarkedWordId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // UserRole configuration
+        modelBuilder.Entity<UserRole>()
+            .HasIndex(r => r.Name)
+            .IsUnique();
+
+        // UserRole seed data
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { Id = 1, Name = "admin", CreatedAt = DateTime.UtcNow },
+            new UserRole { Id = 2, Name = "user", CreatedAt = DateTime.UtcNow }
+        );
+
+        // Content configuration
+        modelBuilder.Entity<Content>()
+            .HasOne(c => c.User)
+            .WithMany(u => u.Contents)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Content>()
+            .HasOne(c => c.BackgroundMusic)
+            .WithMany()
+            .HasForeignKey(c => c.BackgroundMusicId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Content>()
+            .HasMany(c => c.Likes)
+            .WithOne(l => l.Content)
+            .HasForeignKey(l => l.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Content>()
+            .HasMany(c => c.Comments)
+            .WithOne(c => c.Content)
+            .HasForeignKey(c => c.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Like configuration
+        modelBuilder.Entity<Like>()
+            .HasOne(l => l.User)
+            .WithMany(u => u.Likes)
+            .HasForeignKey(l => l.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Like>()
+            .HasOne(l => l.Content)
+            .WithMany(c => c.Likes)
+            .HasForeignKey(l => l.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Comment configuration
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.User)
+            .WithMany(u => u.Comments)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Content)
+            .WithMany(c => c.Comments)
+            .HasForeignKey(c => c.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // WeeklyRanking configuration
+        modelBuilder.Entity<WeeklyRanking>()
+            .HasOne(w => w.Content)
+            .WithMany()
+            .HasForeignKey(w => w.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // UserActivity configuration
+        modelBuilder.Entity<UserActivity>()
+            .HasOne(a => a.User)
+            .WithMany(u => u.UserActivities)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Global query filters
+        modelBuilder.Entity<Content>().HasQueryFilter(c => c.IsDeleted == false);
+        modelBuilder.Entity<User>().HasQueryFilter(u => u.IsDeleted == false);
+        modelBuilder.Entity<UserRole>().HasQueryFilter(ur => ur.IsDeleted == false);
+        modelBuilder.Entity<Like>().HasQueryFilter(l => l.IsDeleted == false);
+        modelBuilder.Entity<Comment>().HasQueryFilter(c => c.IsDeleted == false);
+        modelBuilder.Entity<WeeklyRanking>().HasQueryFilter(wr => wr.IsDeleted == false);
+        modelBuilder.Entity<BackgroundMusic>().HasQueryFilter(bm => bm.IsDeleted == false);
+        modelBuilder.Entity<Announcement>().HasQueryFilter(a => a.IsDeleted == false);
+        modelBuilder.Entity<Asset>().HasQueryFilter(a => a.IsDeleted == false);
+        modelBuilder.Entity<UserActivity>().HasQueryFilter(ua => ua.IsDeleted == false);
+        modelBuilder.Entity<Story>().HasQueryFilter(s => s.IsDeleted == false);
+        modelBuilder.Entity<MarkedWord>().HasQueryFilter(w => w.IsDeleted == false);
+        modelBuilder.Entity<UserCard>().HasQueryFilter(c => c.IsDeleted == false);
     }
 }
