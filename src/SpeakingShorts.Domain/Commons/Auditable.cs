@@ -2,7 +2,7 @@ using System;
 
 namespace SpeakingShorts.Domain.Commons;
 
-public class Auditable
+public abstract class Auditable
 {
     public long Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
