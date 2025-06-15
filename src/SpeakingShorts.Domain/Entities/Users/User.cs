@@ -10,7 +10,8 @@ public class User : Auditable
     public string Email { get; set; }
     public string PasswordHash { get; set; }
     public DateTime RegisteredAt { get; set; }
-    public string ProfilePicture { get; set; }
+    public long? ProfilePictureId { get; set; }
+    public Asset ProfilePicture { get; set; }
     public long UserRoleId { get; set; } 
     public UserRole UserRole { get; set; }
     public ICollection<Content> Contents { get; set; }

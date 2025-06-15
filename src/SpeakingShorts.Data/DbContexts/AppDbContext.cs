@@ -72,13 +72,6 @@ public class AppDbContext : DbContext
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Story configuration
-        modelBuilder.Entity<Story>()
-            .HasOne(s => s.Admin)
-            .WithMany()
-            .HasForeignKey(s => s.AdminId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         modelBuilder.Entity<Story>()
             .HasMany(s => s.MarkedWords)
             .WithOne(w => w.Story)
@@ -186,6 +179,13 @@ public class AppDbContext : DbContext
             .WithMany(u => u.UserActivities)
             .HasForeignKey(a => a.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        //Profile picture configuration
+        modelBuilder.Entity<User>()
+        .HasOne(u => u.ProfilePicture)
+        .WithOne()
+        .HasForeignKey<User>(u => u.ProfilePictureId)
+        .OnDelete(DeleteBehavior.SetNull); // agar asset o'chirilsa, userda null bo'ladi
 
         // Global query filters
         modelBuilder.Entity<Content>().HasQueryFilter(c => c.IsDeleted == false);
