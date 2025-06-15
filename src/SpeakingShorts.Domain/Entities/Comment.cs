@@ -1,5 +1,6 @@
 using System;
 using SpeakingShorts.Domain.Commons;
+using SpeakingShorts.Domain.Entities.Users;
 
 namespace SpeakingShorts.Domain.Entities;
 

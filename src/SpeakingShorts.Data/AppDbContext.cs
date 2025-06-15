@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SpeakingShorts.Domain.Entities;
+using SpeakingShorts.Domain.Entities.Users;
 
 namespace SpeakingShorts.Data;
 
