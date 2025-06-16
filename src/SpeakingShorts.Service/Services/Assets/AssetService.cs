@@ -1,0 +1,72 @@
+﻿using Microsoft.AspNetCore.Http;
+using SpeakingShorts.Data.UnitOfWorks;
+using SpeakingShorts.Domain.Entities;
+using SpeakingShorts.Service.Exceptions;
+using SpeakingShorts.Service.Helpers;
+
+namespace SpeakingShorts.Service.Services.Assets
+{
+	public class AssetService(IUnitOfWork unitOfWork) : IAssetService
+	{
+        public async ValueTask<Asset> UploadAsync(IFormFile file, string fileType)
+        {
+            // Faylni saqlash papkasini belgilash
+            var path = Path.Combine(FilePathHelper.WwwrootPath, fileType);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            // Fayl nomini unikallash
+            var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+            var fullPath = Path.Combine(path, uniqueFileName);
+
+            // Faylni yuklash jarayoni
+            var stream = File.Create(fullPath);
+            await file.CopyToAsync(stream);
+            stream.Close();
+
+            // URL formatidagi yo'lni yaratish (frontend uchun)
+            var relativePath = $"/{fileType}/{uniqueFileName}";
+
+            // Fayl ma'lumotlarini Asset obyektida saqlash
+            var asset = new Asset
+            {
+                FileName = file.FileName,
+                FilePath = relativePath, // Frontend uchun URL ko'rinishida
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Ma'lumotlarni bazaga saqlash
+            await unitOfWork.AssetRepository.InsertAsync(asset);
+            await unitOfWork.SaveAsync();
+
+            return asset;
+        }
+
+
+        public async ValueTask<bool> DeleteAsync(long id)
+		{
+			var existAsset = await unitOfWork.AssetRepository.SelectAsync(file => file.Id == id)
+			   ?? throw new NotFoundException("Asset is not found");
+
+			if (File.Exists(existAsset.FilePath))
+			{
+				File.Delete(existAsset.FilePath);
+			}
+
+			existAsset.DeletedAt = DateTime.UtcNow;
+			await unitOfWork.AssetRepository.DeleteAsync(existAsset);
+			await unitOfWork.SaveAsync();
+
+			return true;
+		}
+
+		public async ValueTask<Asset> GetByIdAsync(long id)
+		{
+			var existFile = await unitOfWork.AssetRepository.SelectAsync(file => file.Id == id)
+				?? throw new NotFoundException($"File is not found with this ID={id}");
+
+			return existFile;
+		}
+	}
+}

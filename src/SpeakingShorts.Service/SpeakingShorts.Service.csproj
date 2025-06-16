@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
@@ -16,11 +16,33 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
+
+		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+		<PackageReference Include="MailKit" Version="4.6.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="MimeKit" Version="4.6.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
+		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\SpeakingShorts.Data\SpeakingShorts.Data.csproj" />
 		<ProjectReference Include="..\SpeakingShorts.Domain\SpeakingShorts.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Services\Announcements\" />
+	  <Folder Include="Services\BackgroundMusics\" />
+	  <Folder Include="Services\Comments\" />
+	  <Folder Include="Services\Contents\" />
+	  <Folder Include="Services\Likes\" />
+	  <Folder Include="Services\MarkedWords\" />
+	  <Folder Include="Services\WeeklyRankings\" />
+	  <Folder Include="Services\UserCards\" />
+	  <Folder Include="Services\UserActivities\" />
+	  <Folder Include="Services\Stories\" />
 	</ItemGroup>
 
 </Project>
