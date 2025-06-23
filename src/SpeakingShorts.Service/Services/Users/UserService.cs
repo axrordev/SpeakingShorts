@@ -1,9 +1,9 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SpeakingShorts.Data.UnitOfWorks;
 using SpeakingShorts.Domain.Entities.Users;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.Service.Exceptions;
+using SpeakingShorts.Service.Extensions;
 using SpeakingShorts.Service.Helpers;
 
 namespace SpeakingShorts.Service.Services.Users;
@@ -12,18 +12,10 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
 {
     public async ValueTask<User> CreateAsync(User user)
     {
-        var existUser = await unitOfWork.UserRepository.SelectAsync(u => u.Phone == user.Phone && u.Email == user.Email);
-        if (existUser?.Phone is not null)
-        {
-            throw new AlreadyExistException($"This user is already exist with this phone | Phone={user.Phone}");
-        }
-        else if (existUser?.Email is not null)
+        var existUser = await unitOfWork.UserRepository.SelectAsync(u => u.Email == user.Email);
+        if (existUser?.Email is not null)
         {
             throw new AlreadyExistException($"This user is already exist with this email | Email={user.Email}");
-        }
-        else if (existUser?.Phone is not null && existUser?.Email is not null)
-        {
-            throw new AlreadyExistException($"This user is already exist with this email and phone | Email={user.Email} & Phone={existUser.Phone}");
         }
 
         var roleWhichIsUser = await unitOfWork.UserRoleRepository.SelectAsync(u => u.Name.ToLower() == "user");
@@ -59,7 +51,6 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         return updatedUser;
     }
 
-
     public async ValueTask<bool> DeleteAsync(long id)
     {
         var exsitUser = await unitOfWork.UserRepository.SelectAsync(user => user.Id == id)
@@ -84,10 +75,7 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
 
         if (!string.IsNullOrWhiteSpace(search))
             users = users.Where(u =>
-                u.Phone.ToString().Contains(search) ||
-                u.Email.ToLower().Contains(search.ToLower()) ||
-                u.LastName.ToLower().Contains(search.ToLower()) ||
-                u.FirstName.ToLower().Contains(search.ToLower()));
+                u.Email.ToLower().Contains(search.ToLower()));
 
         return await users.ToPaginateAsQueryable(@params).OrderBy(filter).ToListAsync();
     }

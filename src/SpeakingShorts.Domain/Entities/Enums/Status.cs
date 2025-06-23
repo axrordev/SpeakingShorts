@@ -2,7 +2,5 @@
 
 public enum ContentStatus
 {
-    Pending,
-    Active,
-    Deleted
+    Pending, Processing, Ready, Failed
 }

@@ -19,6 +19,9 @@ public partial class Content : Auditable
     public long FileSize { get; set; }   // Bytes
     
     public ContentType Type { get; set; }
+    public ContentStatus Status { get; set; } = ContentStatus.Pending; 
+    public string ResultFileKey { get; set; } // Tayyor faylning nomi (video va music bilan backblaze fayl)
+    
     public int DurationLimit { get; set; }    // admin belgilagan vaqt limiti
     public int Duration { get; set; }    // yuklangan faylning vaqtini o'lchash
     public bool IsTopContent { get; set; }
@@ -26,7 +29,6 @@ public partial class Content : Auditable
     // Background music fields
     public long? BackgroundMusicId { get; set; }
     public BackgroundMusic BackgroundMusic { get; set; }
-    public ContentStatus Status { get; set; } = ContentStatus.Pending;
     
     public ICollection<Like> Likes { get; set; }
     public ICollection<Comment> Comments { get; set; }

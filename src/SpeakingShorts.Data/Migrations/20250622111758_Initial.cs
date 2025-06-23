@@ -161,6 +161,7 @@ namespace SpeakingShorts.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Username = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
                     RegisteredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ProfilePictureId = table.Column<long>(type: "bigint", nullable: true),
@@ -203,11 +204,12 @@ namespace SpeakingShorts.Data.Migrations
                     FileUrl = table.Column<string>(type: "text", nullable: true),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    ResultFileKey = table.Column<string>(type: "text", nullable: true),
                     DurationLimit = table.Column<int>(type: "integer", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
                     IsTopContent = table.Column<bool>(type: "boolean", nullable: false),
                     BackgroundMusicId = table.Column<long>(type: "bigint", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: false),
                     BackgroundMusicId1 = table.Column<long>(type: "bigint", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -411,8 +413,8 @@ namespace SpeakingShorts.Data.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DeletedAt", "DeletedById", "IsDeleted", "Name", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2025, 6, 15, 17, 28, 53, 480, DateTimeKind.Utc).AddTicks(1006), null, null, null, false, "admin", null, null },
-                    { 2L, new DateTime(2025, 6, 15, 17, 28, 53, 480, DateTimeKind.Utc).AddTicks(1008), null, null, null, false, "user", null, null }
+                    { 1L, new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6734), null, null, null, false, "admin", null, null },
+                    { 2L, new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6736), null, null, null, false, "user", null, null }
                 });
 
             migrationBuilder.CreateIndex(

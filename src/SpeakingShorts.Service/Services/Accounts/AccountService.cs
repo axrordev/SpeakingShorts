@@ -21,7 +21,8 @@ public class AccountService(IUnitOfWork unitOfWork, IMemoryCache memoryCache) : 
         var roleWhichIsUser = await unitOfWork.UserRoleRepository.SelectAsync(u => u.Name.ToLower() == "user");
 
         user.UserRoleId = roleWhichIsUser.Id;
-        user.PasswordHash = PasswordHasher.Hash(user.PasswordHash);
+        user.RegisteredAt = DateTime.UtcNow;
+
         var json = JsonConvert.SerializeObject(user);
         CacheSet($"registerKey-{user.Email}", json);
 
@@ -73,13 +74,13 @@ public class AccountService(IUnitOfWork unitOfWork, IMemoryCache memoryCache) : 
         else
         {
             var existUser = await unitOfWork.UserRepository
-                .SelectAsync(expression: user => user.Email == email, includes: ["Role"])
+                .SelectAsync(expression: user => user.Email == email, includes: ["UserRole"])
             ?? throw new ForbiddenException("Email or Password is invalid");
 
             if (!PasswordHasher.Verify(password, existUser.PasswordHash))
                 throw new ForbiddenException("Email or Password is invalid");
 
-            return (user: existUser, token: AuthHelper.GenerateToken(existUser.Id, existUser.Email, existUser.Role.Name));
+            return (user: existUser, token: AuthHelper.GenerateToken(existUser.Id, existUser.Email, existUser.UserRole.Name));
         }
     }
 

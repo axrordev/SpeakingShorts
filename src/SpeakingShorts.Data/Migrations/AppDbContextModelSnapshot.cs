@@ -17,7 +17,7 @@ namespace SpeakingShorts.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -256,6 +256,9 @@ namespace SpeakingShorts.Data.Migrations
 
                     b.Property<bool>("IsTopContent")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ResultFileKey")
+                        .HasColumnType("text");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -548,6 +551,9 @@ namespace SpeakingShorts.Data.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
                     b.Property<long?>("ProfilePictureId")
                         .HasColumnType("bigint");
 
@@ -625,14 +631,14 @@ namespace SpeakingShorts.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2025, 6, 15, 17, 28, 53, 480, DateTimeKind.Utc).AddTicks(1006),
+                            CreatedAt = new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6734),
                             IsDeleted = false,
                             Name = "admin"
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2025, 6, 15, 17, 28, 53, 480, DateTimeKind.Utc).AddTicks(1008),
+                            CreatedAt = new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6736),
                             IsDeleted = false,
                             Name = "user"
                         });

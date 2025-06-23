@@ -21,7 +21,7 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
 
 		<ProjectReference Include="..\SpeakingShorts.Service\SpeakingShorts.Service.csproj" />
 	  <ProjectReference Include="..\SpeakingShorts.Domain\SpeakingShorts.Domain.csproj" />
