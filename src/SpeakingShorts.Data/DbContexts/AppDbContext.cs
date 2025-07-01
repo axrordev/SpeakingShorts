@@ -10,7 +10,6 @@ public class AppDbContext : DbContext
         : base(options){}
 
     public DbSet<Content> Contents { get; set; }
-    public DbSet<BackgroundMusic> BackgroundMusics { get; set; }
     public DbSet<Announcement> Announcements { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Comment> Comments { get; set; }
@@ -123,12 +122,6 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Content>()
-            .HasOne(c => c.BackgroundMusic)
-            .WithMany()
-            .HasForeignKey(c => c.BackgroundMusicId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<Content>()
             .HasMany(c => c.Likes)
             .WithOne(l => l.Content)
             .HasForeignKey(l => l.ContentId)
@@ -194,7 +187,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Like>().HasQueryFilter(l => l.IsDeleted == false);
         modelBuilder.Entity<Comment>().HasQueryFilter(c => c.IsDeleted == false);
         modelBuilder.Entity<WeeklyRanking>().HasQueryFilter(wr => wr.IsDeleted == false);
-        modelBuilder.Entity<BackgroundMusic>().HasQueryFilter(bm => bm.IsDeleted == false);
         modelBuilder.Entity<Announcement>().HasQueryFilter(a => a.IsDeleted == false);
         modelBuilder.Entity<Asset>().HasQueryFilter(a => a.IsDeleted == false);
         modelBuilder.Entity<UserActivity>().HasQueryFilter(ua => ua.IsDeleted == false);

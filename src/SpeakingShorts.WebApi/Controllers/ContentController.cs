@@ -1,55 +1,75 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SpeakingShorts.Service.Services.BackblazeServices;
-using SpeakingShorts.Service.Services.Contents;
-using SpeakingShorts.Domain.Entities;
 using SpeakingShorts.Domain.Entities.Enums;
+using SpeakingShorts.Service.Configurations;
+using SpeakingShorts.WebApi.Models.Commons;
 
+namespace SpeakingShorts.WebApi.Controllers;
 
-namespace SpeakingShorts.WebApi.Controllers
+public class ContentsController(IContentApiService contentApiService) : BaseController
 {
-[ApiController]
-[Route("api/[controller]")]
-public class ContentController : ControllerBase
-{
-    private readonly IContentService _contentService;
-
-    public ContentController(IContentService contentService)
-    {
-        _contentService = contentService;
-    }
-
     [HttpPost]
     public async Task<IActionResult> Create(
          IFormFile file, 
         [FromQuery] ContentType type, 
-        [FromQuery] string title, 
-        [FromQuery] long? backgroundMusicId)
+        [FromQuery] string title)
     {
-        var content = await _contentService.CreateAndProcessAsync(file, type, title, backgroundMusicId);
+        var content = await contentApiService.CreateAndProcessAsync(file, type, title);
         return Accepted(content); // 202 Accepted, chunki qayta ishlash fonda ketishi mumkin
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(long id)
-    {
-        var content = await _contentService.GetAsync(id);
-        return Ok(content);
-    }
+    [HttpGet("{id:long}")]
+    public async ValueTask<IActionResult> GetAsync([FromRoute] long id)
+        => Ok(new Response
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = await contentApiService.GetAsync(id)
+        });
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var contents = await _contentService.GetAllAsync();
-        return Ok(contents);
-    }
+    public async ValueTask<IActionResult> GetListAsync([
+        FromQuery] PaginationParams @params,
+        [FromQuery] Filter filter,
+        [FromQuery] string search = null)
+        => Ok(new Response
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = await contentApiService.GetAllAsync(@params, filter, search)
+        });
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(long id)
+    [HttpGet("all")]
+    public async ValueTask<IActionResult> GetAllAsync()
+        => Ok(new Response
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = await contentApiService.GetAllAsync()
+        });
+
+    [HttpPut("{id:long}")]
+    public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] ContentModifyModel model)
+        => Ok(new Response
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = await contentApiService.ModifyAsync(id, model)
+        });
+
+    [HttpDelete("{id:long}")]
+    public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
     {
-        await _contentService.DeleteAsync(id);
-        return NoContent();
+        await contentApiService.DeleteAsync(id);
+        return Ok(new Response
+        {
+            StatusCode = 200,
+            Message = "Success"
+        });
     }
 }
 
-}
+
+
+
+

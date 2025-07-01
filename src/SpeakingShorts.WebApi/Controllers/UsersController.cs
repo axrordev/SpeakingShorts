@@ -1,11 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.WebApi.ApiService.Users;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.WebApi.Models.Users;
-
 
 namespace SpeakingShorts.WebApi.Controllers;
 

@@ -13,7 +13,6 @@ public interface IUnitOfWork : IDisposable
     IRepository<Announcement> AnnouncementRepository { get; }
     IRepository<Comment> CommentRepository { get; }
     IRepository<Asset> AssetRepository { get; }
-    IRepository<BackgroundMusic> BackgroundMusicRepository { get; }
     IRepository<Content> ContentRepository { get; }
     IRepository<Like> LikeRepository { get; }
     IRepository<MarkedWord> MarkedWordRepository { get; }

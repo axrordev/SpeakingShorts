@@ -4,8 +4,8 @@ using SpeakingShorts.Data.DbContexts;
 using SpeakingShorts.Data.UnitOfWorks;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.Service.Services.BackblazeServices;
-using SpeakingShorts.Service.Services.Contents;
-using SpeakingShorts.Service.Services.Processing;
+using SpeakingShorts.Service.Services.Infrastructure.Utilities;
+using SpeakingShorts.Service.Services.WeeklyRankings;
 using SpeakingShorts.WebApi.ApiService.Accounts;
 using SpeakingShorts.WebApi.Extensions;
 using SpeakingShorts.WebApi.MappingProfile;
@@ -37,6 +37,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServices(builder.Configuration);
 builder.Services.AddApiServices();
 
+builder.Services.AddHostedService<WeeklyRankingJob>();
+builder.Services.AddSingleton<ISystemTime, SystemTime>();
+
 
 // Validatorlarni qo'shish
 builder.Services.AddValidators();
@@ -58,18 +61,6 @@ builder.Services.AddSingleton<IBackblazeService, BackblazeService>();
 
 // Xatolikni boshqarish (Exception middleware'lari)
 builder.Services.AddExceptions();
-
-// ✅ Background Video Processing Services
-builder.Services.AddSingleton<IBackgroundTaskQueue>(ctx => 
-{
-    if (!int.TryParse(builder.Configuration["QueueCapacity"], out var queueCapacity))
-    {
-        queueCapacity = 100;
-    }
-    return new BackgroundTaskQueue(queueCapacity);
-});
-builder.Services.AddHostedService<VideoProcessingHostedService>();
-builder.Services.AddScoped<IVideoProcessingService, VideoProcessingService>();
 
 var app = builder.Build();
 

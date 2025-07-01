@@ -25,6 +25,8 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
+
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Xabe.FFmpeg" Version="6.0.1" />
@@ -42,7 +44,6 @@
 	  <Folder Include="Services\Contents\" />
 	  <Folder Include="Services\Likes\" />
 	  <Folder Include="Services\MarkedWords\" />
-	  <Folder Include="Services\WeeklyRankings\" />
 	  <Folder Include="Services\UserCards\" />
 	  <Folder Include="Services\UserActivities\" />
 	  <Folder Include="Services\Stories\" />

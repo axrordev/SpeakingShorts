@@ -8,6 +8,4 @@ public class Story : Auditable
 {
     public string Title { get; set; }
     public ICollection<MarkedWord> MarkedWords { get; set; }
-    public bool IsPublished { get; set; }
-    public DateTime? PublishedAt { get; set; }
 }

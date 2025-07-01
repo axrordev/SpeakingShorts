@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SpeakingShorts.WebApi.ApiService.Accounts;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.WebApi.Models.Users;

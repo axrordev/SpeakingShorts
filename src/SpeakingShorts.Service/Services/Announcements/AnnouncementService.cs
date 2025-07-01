@@ -12,6 +12,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
     public async ValueTask<Announcement> CreateAsync(Announcement announcement)
     {
         var createdAnnouncement = await unitOfWork.AnnouncementRepository.InsertAsync(announcement);
+        createdAnnouncement.CreatedAt = DateTime.UtcNow;
         await unitOfWork.SaveAsync();
         return createdAnnouncement;
     }
@@ -23,6 +24,8 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
 
         existAnnouncement.Title = announcement.Title;
         existAnnouncement.Message = announcement.Message;
+        existAnnouncement.ExpireDate = announcement.ExpireDate;
+        existAnnouncement.IsActive = announcement.IsActive;
         existAnnouncement.UpdatedAt = DateTime.UtcNow;
 
         var updatedAnnouncement = await unitOfWork.AnnouncementRepository.UpdateAsync(existAnnouncement);

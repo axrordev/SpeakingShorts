@@ -1,19 +1,30 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SpeakingShorts.Data.UnitOfWorks;
-using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.Service.Helpers;
 using SpeakingShorts.Service.Services.Accounts;
+using SpeakingShorts.Service.Services.Announcements;
 using SpeakingShorts.Service.Services.Assets;
-using SpeakingShorts.Service.Services.BackgroundMusics;
+using SpeakingShorts.Service.Services.Comments;
 using SpeakingShorts.Service.Services.Contents;
-using SpeakingShorts.Service.Services.Processing;
+using SpeakingShorts.Service.Services.Likes;
+using SpeakingShorts.Service.Services.MarkedWords;
+using SpeakingShorts.Service.Services.Stories;
+using SpeakingShorts.Service.Services.UserCards;
 using SpeakingShorts.Service.Services.UserRoles;
 using SpeakingShorts.Service.Services.Users;
+using SpeakingShorts.Service.Services.WeeklyRankings;
 using SpeakingShorts.WebApi.ApiService.Accounts;
+using SpeakingShorts.WebApi.ApiService.Announcements;
+using SpeakingShorts.WebApi.ApiService.Comments;
+using SpeakingShorts.WebApi.ApiService.Contents;
+using SpeakingShorts.WebApi.ApiService.Likes;
+using SpeakingShorts.WebApi.ApiService.MarkedWords;
+using SpeakingShorts.WebApi.ApiService.Stories;
+using SpeakingShorts.WebApi.ApiService.UserCards;
 using SpeakingShorts.WebApi.ApiService.Users;
+using SpeakingShorts.WebApi.ApiService.WeeklyRankings;
 using SpeakingShorts.WebApi.Helpers;
 using SpeakingShorts.WebApi.Validators.Accounts;
 using System.Text;
@@ -32,32 +43,29 @@ public static class ServicesCollectionExtension
         services.AddScoped<IAssetService, AssetService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IBackgroundMusicService, BackgroundMusicService>();
-        //services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IUserRoleService, UserRoleService>();
-       // services.AddScoped<ILikeService, LikeService>();
-
-        // Content and Video Processing
+        services.AddScoped<ILikeService, LikeService>();
+        services.AddScoped<IAnnouncementService, AnnouncementService>();
+        services.AddScoped<IMarkedWordService, MarkedWordService>();
+        services.AddScoped<IStoryService, StoryService>();
+        services.AddScoped<IUserCardService, UserCardService>();
+        services.AddScoped<IWeeklyRankingService, WeeklyRankingService>();
         services.AddScoped<IContentService, ContentService>();
-        services.AddScoped<IVideoProcessingService, VideoProcessingService>();
-
-        // Background Task Queue
-        services.AddSingleton<IBackgroundTaskQueue>(ctx => 
-        {
-            if (!int.TryParse(configuration["QueueCapacity"], out var queueCapacity))
-            {
-                queueCapacity = 100;
-            }
-            return new BackgroundTaskQueue(queueCapacity);
-        });
-        services.AddHostedService<VideoProcessingHostedService>();
     }
 
      public static void AddApiServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountApiService, AccountApiService>();
             services.AddScoped<IUserApiService, UserApiService>();
-
+            services.AddScoped<IAnnouncementApiService, AnnouncementApiService>();
+            services.AddScoped<ICommentApiService, CommentApiService>();
+            services.AddScoped<ILikeApiService, LikeApiService>();
+            services.AddScoped<IMarkedWordApiService, MarkedWordApiService>();
+            services.AddScoped<IStoryApiService, StoryApiService>();
+            services.AddScoped<IUserCardApiService, UserCardApiService>();
+            services.AddScoped<IWeeklyRankingApiService, WeeklyRankingApiService>();
+            services.AddScoped<IContentApiService, ContentApiService>();
         }
 
         public static void AddExceptions(this IServiceCollection services)
