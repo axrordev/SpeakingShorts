@@ -12,9 +12,12 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
     public async ValueTask<Announcement> CreateAsync(Announcement announcement)
     {
         var createdAnnouncement = await unitOfWork.AnnouncementRepository.InsertAsync(announcement);
-        createdAnnouncement.CreatedAt = DateTime.UtcNow;
-        await unitOfWork.SaveAsync();
-        return createdAnnouncement;
+      createdAnnouncement.CreatedAt = DateTime.UtcNow;
+      createdAnnouncement.IsActive = true;
+      await unitOfWork.SaveAsync();
+      if (createdAnnouncement.ExpireDate < DateTime.UtcNow)
+          throw new Exception("Expire date cannot be in the past");
+      return createdAnnouncement;
     }
 
     public async ValueTask<Announcement> ModifyAsync(long id, Announcement announcement)

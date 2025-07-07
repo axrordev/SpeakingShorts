@@ -3,12 +3,14 @@ using SpeakingShorts.WebApi.ApiService.Comments;
 using SpeakingShorts.WebApi.Models.Comments;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.Service.Configurations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
 
 public class CommentsController(ICommentApiService commentApiService) : BaseController
 {
+    [Authorize]
     [HttpPost]
     public async ValueTask<IActionResult> CreateAsync([FromBody] CommentCreateModel model)
         => Ok(new Response
@@ -18,6 +20,7 @@ public class CommentsController(ICommentApiService commentApiService) : BaseCont
             Data = await commentApiService.CreateAsync(model)
         });
 
+    [Authorize]
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] CommentModifyModel model)
         => Ok(new Response
@@ -27,6 +30,7 @@ public class CommentsController(ICommentApiService commentApiService) : BaseCont
             Data = await commentApiService.ModifyAsync(id, model)
         });
 
+    [Authorize]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
         => Ok(new Response

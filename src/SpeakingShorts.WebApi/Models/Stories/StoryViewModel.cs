@@ -7,6 +7,8 @@ namespace SpeakingShorts.WebApi.Models.Stories
     {
         public long Id { get; set; }
         public string Title { get; set; }
+        public string Text { get; set; }
         public ICollection<MarkedWordViewModel> MarkedWords { get; set; }
     }
 }
+ 

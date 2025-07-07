@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpeakingShorts.Domain.Entities.Enums;
 using SpeakingShorts.Service.Configurations;
@@ -8,6 +9,7 @@ namespace SpeakingShorts.WebApi.Controllers;
 
 public class ContentsController(IContentApiService contentApiService) : BaseController
 {
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
          IFormFile file, 
@@ -48,6 +50,8 @@ public class ContentsController(IContentApiService contentApiService) : BaseCont
             Data = await contentApiService.GetAllAsync()
         });
 
+
+    [Authorize]
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] ContentModifyModel model)
         => Ok(new Response
@@ -57,6 +61,7 @@ public class ContentsController(IContentApiService contentApiService) : BaseCont
             Data = await contentApiService.ModifyAsync(id, model)
         });
 
+    [Authorize]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
     {

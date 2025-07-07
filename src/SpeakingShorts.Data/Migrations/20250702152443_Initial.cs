@@ -59,39 +59,13 @@ namespace SpeakingShorts.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BackgroundMusics",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    FileKey = table.Column<string>(type: "text", nullable: true),
-                    FileUrl = table.Column<string>(type: "text", nullable: true),
-                    FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Duration = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedById = table.Column<long>(type: "bigint", nullable: true),
-                    UpdatedById = table.Column<long>(type: "bigint", nullable: true),
-                    DeletedById = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BackgroundMusics", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Stories",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: true),
-                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
-                    PublishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Text = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -205,12 +179,9 @@ namespace SpeakingShorts.Data.Migrations
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    ResultFileKey = table.Column<string>(type: "text", nullable: true),
                     DurationLimit = table.Column<int>(type: "integer", nullable: false),
                     Duration = table.Column<int>(type: "integer", nullable: false),
                     IsTopContent = table.Column<bool>(type: "boolean", nullable: false),
-                    BackgroundMusicId = table.Column<long>(type: "bigint", nullable: true),
-                    BackgroundMusicId1 = table.Column<long>(type: "bigint", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -222,17 +193,6 @@ namespace SpeakingShorts.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Contents_BackgroundMusics_BackgroundMusicId",
-                        column: x => x.BackgroundMusicId,
-                        principalTable: "BackgroundMusics",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Contents_BackgroundMusics_BackgroundMusicId1",
-                        column: x => x.BackgroundMusicId1,
-                        principalTable: "BackgroundMusics",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Contents_Users_UserId",
                         column: x => x.UserId,
@@ -413,8 +373,8 @@ namespace SpeakingShorts.Data.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedById", "DeletedAt", "DeletedById", "IsDeleted", "Name", "UpdatedAt", "UpdatedById" },
                 values: new object[,]
                 {
-                    { 1L, new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6734), null, null, null, false, "admin", null, null },
-                    { 2L, new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6736), null, null, null, false, "user", null, null }
+                    { 1L, new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9671), null, null, null, false, "admin", null, null },
+                    { 2L, new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9672), null, null, null, false, "user", null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -426,16 +386,6 @@ namespace SpeakingShorts.Data.Migrations
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contents_BackgroundMusicId",
-                table: "Contents",
-                column: "BackgroundMusicId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contents_BackgroundMusicId1",
-                table: "Contents",
-                column: "BackgroundMusicId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contents_UserId",
@@ -541,9 +491,6 @@ namespace SpeakingShorts.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Stories");
-
-            migrationBuilder.DropTable(
-                name: "BackgroundMusics");
 
             migrationBuilder.DropTable(
                 name: "Users");

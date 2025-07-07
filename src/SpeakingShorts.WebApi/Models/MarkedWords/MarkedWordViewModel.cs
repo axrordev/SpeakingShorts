@@ -8,7 +8,7 @@ namespace SpeakingShorts.WebApi.Models.MarkedWords
         public long Id { get; set; }
         public string Word { get; set; }
         public string Definition { get; set; }
-        public StoryViewModel Story { get; set; }
+        public long StoryId { get; set; }
         public ICollection<UserCardViewModel> UserCards { get; set; }
     }
 }

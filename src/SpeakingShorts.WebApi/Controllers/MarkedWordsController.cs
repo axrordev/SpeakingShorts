@@ -3,12 +3,14 @@ using SpeakingShorts.WebApi.Models.MarkedWords;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.WebApi.ApiService.MarkedWords;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
 
 public class MarkedWordsController(IMarkedWordApiService markedWordApiService) : BaseController
 {
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async ValueTask<IActionResult> CreateAsync([FromBody] MarkedWordCreateModel model)
         => Ok(new Response
@@ -18,6 +20,7 @@ public class MarkedWordsController(IMarkedWordApiService markedWordApiService) :
             Data = await markedWordApiService.CreateAsync(model)
         });
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] MarkedWordModifyModel model)
         => Ok(new Response
@@ -27,6 +30,7 @@ public class MarkedWordsController(IMarkedWordApiService markedWordApiService) :
             Data = await markedWordApiService.ModifyAsync(id, model)
         });
 
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
         => Ok(new Response

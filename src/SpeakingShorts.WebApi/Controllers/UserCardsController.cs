@@ -3,10 +3,11 @@ using SpeakingShorts.WebApi.Models.UserCards;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.WebApi.ApiService.UserCards;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
-
+[Authorize]
 public class UserCardsController(IUserCardApiService userCardApiService) : BaseController
 {
     [HttpPost]

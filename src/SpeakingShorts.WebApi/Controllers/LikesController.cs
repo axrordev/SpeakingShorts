@@ -3,12 +3,14 @@ using SpeakingShorts.WebApi.ApiService.Likes;
 using SpeakingShorts.WebApi.Models.Likes;
 using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.Service.Configurations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
 
 public class LikesController(ILikeApiService likeApiService) : BaseController
 {
+    [Authorize]
     [HttpPost]
     public async ValueTask<IActionResult> CreateAsync([FromBody] LikeCreateModel model)
         => Ok(new Response
@@ -18,6 +20,7 @@ public class LikesController(ILikeApiService likeApiService) : BaseController
             Data = await likeApiService.CreateAsync(model)
         });
 
+    [Authorize]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
         => Ok(new Response
@@ -63,6 +66,7 @@ public class LikesController(ILikeApiService likeApiService) : BaseController
             Data = await likeApiService.GetByContentIdAsync(contentId)
         });
 
+    [Authorize]
     [HttpPost("toggle/{contentId:long}")]
     public async ValueTask<IActionResult> ToggleLikeAsync([FromRoute] long contentId)
         => Ok(new Response

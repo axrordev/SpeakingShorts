@@ -11,6 +11,7 @@ using SpeakingShorts.WebApi.Models.Stories;
 using SpeakingShorts.WebApi.Models.UserCards;
 using SpeakingShorts.WebApi.Models.Contents;
 using SpeakingShorts.WebApi.Models.WeeklyRankings;
+using SpeakingShorts.WebApi.Models.UserRoles;
 
 namespace SpeakingShorts.WebApi.MappingProfile
 {
@@ -24,6 +25,10 @@ public class MappingProfile : Profile
         CreateMap<UserUpdateModel, User>();
         CreateMap<User, UserViewModel>();
         CreateMap<User, LoginViewModel>();
+
+        CreateMap<UserRole, UserRoleCreateModel>().ReverseMap();
+        CreateMap<UserRole, UserRoleUpdateModel>().ReverseMap();
+        CreateMap<UserRole, UserRoleViewModel>().ReverseMap();
 
         // Announcement
         CreateMap<AnnouncementCreateModel, Announcement>();

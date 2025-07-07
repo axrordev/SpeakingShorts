@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,7 @@ namespace SpeakingShorts.Service.Services.Contents;
 
 public class ContentService(IUnitOfWork _unitOfWork, ILogger<ContentService> _logger, IBackblazeService _storageService, IUserActivityService _userActivityService) : IContentService
 {
+     private readonly string _baseUrl = "https://f005.backblazeb2.com/file/Speaking/";
     public async Task<Content> CreateAndProcessAsync(IFormFile file, ContentType type, string title)
     {
         try
@@ -86,8 +88,10 @@ public class ContentService(IUnitOfWork _unitOfWork, ILogger<ContentService> _lo
     {
         try
         {
-            return await _unitOfWork.ContentRepository.SelectAsync(c => c.Id == id, includes: ["User", "Comments", "Likes"])
+            var content =  await _unitOfWork.ContentRepository.SelectAsync(c => c.Id == id, includes: ["User", "Comments", "Likes"])
                    ?? throw new NotFoundException("Content not found.");
+             content.FileUrl = _baseUrl + content.FileKey;
+            return content;
         }
         catch (Exception ex)
         {
@@ -100,7 +104,12 @@ public class ContentService(IUnitOfWork _unitOfWork, ILogger<ContentService> _lo
     {
         try
         {
-            return await _unitOfWork.ContentRepository.Select(includes: ["User"]).ToListAsync();
+            var contents =  await _unitOfWork.ContentRepository.Select(includes: ["User", "Comments", "Likes"]).ToListAsync();
+            foreach (var content in contents)
+            {
+                content.FileUrl = _baseUrl + content.FileKey;
+            }
+            return contents;
         }
         catch (Exception ex)
         {
@@ -175,14 +184,19 @@ public class ContentService(IUnitOfWork _unitOfWork, ILogger<ContentService> _lo
     {
         try
         {
-            var contents = _unitOfWork.ContentRepository.Select(isTracking: false, includes: ["User"]);
+            var query = _unitOfWork.ContentRepository.Select(isTracking: false, includes: ["User", "Comments", "Likes"]);
 
             if (!string.IsNullOrWhiteSpace(search))
-                contents = contents.Where(c => 
+                query = query.Where(c => 
                     c.Title.ToLower().Contains(search.ToLower()) ||
                     c.Description.ToLower().Contains(search.ToLower()));
 
-            return await contents.ToPaginateAsQueryable(@params).OrderBy(filter).ToListAsync();
+            var contents =  await query.ToPaginateAsQueryable(@params).OrderBy(filter).ToListAsync();
+            foreach (var content in contents)
+            {
+              content.FileUrl = _baseUrl + content.FileKey; 
+            }
+            return contents;
         }
         catch (Exception ex)
         {

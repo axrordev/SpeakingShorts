@@ -1,9 +1,8 @@
-﻿
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using SpeakingShorts.Service.Exceptions;
 using SpeakingShorts.WebApi.Models.Commons;
 
-namespace Axidel.WebApi.Middlewares;
+namespace SpeakingShorts.WebApi.Middlewares;
 
 public class ForbiddenExceptionMiddleware : IExceptionHandler
 {

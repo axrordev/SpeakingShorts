@@ -1,8 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using SpeakingShorts.WebApi.Models.Commons;
 
-namespace Axidel.WebApi.Middlewares;
+namespace SpeakingShorts.WebApi.Middlewares;
 
 public class InternalServerExceptionMiddleware(ILogger<InternalServerExceptionMiddleware> logger) : IExceptionHandler
 {

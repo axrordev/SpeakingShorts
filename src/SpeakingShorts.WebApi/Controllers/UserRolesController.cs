@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.WebApi.ApiService.UserRoles;
 using SpeakingShorts.WebApi.Models.Commons;
@@ -7,6 +8,7 @@ using SpeakingShorts.WebApi.Models.UserRoles;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
+[Authorize(Roles = "admin")]
 public class UserRolesController(IUserRoleApiService userRoleApiService) : BaseController
 {
     [HttpPost]

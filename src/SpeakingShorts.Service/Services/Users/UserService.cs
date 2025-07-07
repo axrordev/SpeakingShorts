@@ -65,13 +65,13 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
     public async ValueTask<User> GetAsync(long id)
     {
         return await unitOfWork.UserRepository
-            .SelectAsync(expression: user => user.Id == id, includes: ["Role"])
+            .SelectAsync(expression: user => user.Id == id, includes: ["UserRole"])
             ?? throw new NotFoundException("This user is not found");
     }
 
     public async ValueTask<IEnumerable<User>> GetAllAsync(PaginationParams @params, Filter filter, string search = null)
     {
-        var users = unitOfWork.UserRepository.Select(isTracking: false, includes: ["Role"]);
+        var users = unitOfWork.UserRepository.Select(isTracking: false, includes: ["UserRole"]);
 
         if (!string.IsNullOrWhiteSpace(search))
             users = users.Where(u =>

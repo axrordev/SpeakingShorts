@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SpeakingShorts.Data.UnitOfWorks;
 using SpeakingShorts.Domain.Entities;
+using SpeakingShorts.Domain.Entities.Users;
 using SpeakingShorts.Service.Configurations;
 using SpeakingShorts.Service.Exceptions;
 using SpeakingShorts.Service.Extensions;
@@ -14,7 +15,11 @@ public class LikeService(IUnitOfWork unitOfWork) : ILikeService
     {
         like.UserId = HttpContextHelper.GetUserId;
         like.CreatedById = HttpContextHelper.GetUserId;
-
+        if (like.UserId == null || like.UserId == 0)
+        {
+            // Login qilmagan foydalanuvchi uchun xabar qaytarish
+            throw new UnauthorizedAccessException("Please log in !");
+        }
         var createdLike = await unitOfWork.LikeRepository.InsertAsync(like);
         await unitOfWork.SaveAsync();
         return createdLike;

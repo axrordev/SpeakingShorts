@@ -9,7 +9,6 @@ namespace SpeakingShorts.WebApi.Models.UserCards
     {
         public long Id { get; set; }
         public UserViewModel User { get; set; }
-        public MarkedWordViewModel MarkedWord { get; set; }
         public bool IsLearned { get; set; }
         public DateTime? LearnedAt { get; set; }
         public int ReviewCount { get; set; }

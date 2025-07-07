@@ -7,7 +7,7 @@ namespace SpeakingShorts.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 //[CustomAuthorize]
-//[Authorize]
+
 
 public class BaseController : ControllerBase
 {

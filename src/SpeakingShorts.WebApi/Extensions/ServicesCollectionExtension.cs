@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SpeakingShorts.Data.UnitOfWorks;
@@ -11,6 +12,7 @@ using SpeakingShorts.Service.Services.Contents;
 using SpeakingShorts.Service.Services.Likes;
 using SpeakingShorts.Service.Services.MarkedWords;
 using SpeakingShorts.Service.Services.Stories;
+using SpeakingShorts.Service.Services.UserActivities;
 using SpeakingShorts.Service.Services.UserCards;
 using SpeakingShorts.Service.Services.UserRoles;
 using SpeakingShorts.Service.Services.Users;
@@ -23,9 +25,11 @@ using SpeakingShorts.WebApi.ApiService.Likes;
 using SpeakingShorts.WebApi.ApiService.MarkedWords;
 using SpeakingShorts.WebApi.ApiService.Stories;
 using SpeakingShorts.WebApi.ApiService.UserCards;
+using SpeakingShorts.WebApi.ApiService.UserRoles;
 using SpeakingShorts.WebApi.ApiService.Users;
 using SpeakingShorts.WebApi.ApiService.WeeklyRankings;
 using SpeakingShorts.WebApi.Helpers;
+using SpeakingShorts.WebApi.Middlewares;
 using SpeakingShorts.WebApi.Validators.Accounts;
 using System.Text;
 
@@ -52,6 +56,7 @@ public static class ServicesCollectionExtension
         services.AddScoped<IUserCardService, UserCardService>();
         services.AddScoped<IWeeklyRankingService, WeeklyRankingService>();
         services.AddScoped<IContentService, ContentService>();
+        services.AddScoped<IUserActivityService, UserActivityService>();
     }
 
      public static void AddApiServices(this IServiceCollection services)
@@ -66,18 +71,19 @@ public static class ServicesCollectionExtension
             services.AddScoped<IUserCardApiService, UserCardApiService>();
             services.AddScoped<IWeeklyRankingApiService, WeeklyRankingApiService>();
             services.AddScoped<IContentApiService, ContentApiService>();
+            services.AddScoped<IUserRoleApiService, UserRoleApiService>();
         }
 
         public static void AddExceptions(this IServiceCollection services)
         {
             FilePathHelper.WwwrootPath = Path.GetFullPath("wwwroot");
 
-            //services.AddExceptionHandler<NotFoundExceptionMiddleware>();
-            //services.AddExceptionHandler<ForbiddenExceptionMiddleware>();
-            //services.AddExceptionHandler<AlreadyExistExceptionMiddleware>();
-            //services.AddExceptionHandler<InternalServerExceptionMiddleware>();
-            //services.AddExceptionHandler<ArgumentIsNotValidExceptionMiddleware>();
-        }
+        services.AddExceptionHandler<NotFoundExceptionMiddleware>();
+        services.AddExceptionHandler<ForbiddenExceptionMiddleware>();
+        services.AddExceptionHandler<AlreadyExistExceptionMiddleware>();
+        services.AddExceptionHandler<InternalServerExceptionMiddleware>();
+        services.AddExceptionHandler<ArgumentIsNotValidExceptionMiddleware>();
+    }
 
         public static void AddInjectHelper(this WebApplication app)
         {

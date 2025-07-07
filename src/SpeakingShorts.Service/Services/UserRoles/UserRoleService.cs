@@ -55,12 +55,13 @@ public class UserRoleService(IUnitOfWork unitOfWork) : IUserRoleService
         return true;
     }
 
-    public async ValueTask<UserRole> GetAsync(long id)
-    {
-        return await unitOfWork.UserRoleRepository
-            .SelectAsync(expression: role => role.Id == id)
-            ?? throw new NotFoundException("Role not found");
-    }
+     public async ValueTask<UserRole> GetByIdAsync(long id)
+     {
+        var existUserRole = await unitOfWork.UserRoleRepository.SelectAsync(uRole => uRole.Id == id)
+            ?? throw new NotFoundException($"This user role is not found with this ID={id}");
+
+        return existUserRole;
+     }
 
     public async ValueTask<IEnumerable<UserRole>> GetAllAsync(PaginationParams @params, Filter filter, string search = null)
     {

@@ -5,6 +5,7 @@ using SpeakingShorts.WebApi.Models.Users;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
+
 public class AccountsController(IAccountApiService accountApiService) : BaseController
 {
     [HttpPost("register")]

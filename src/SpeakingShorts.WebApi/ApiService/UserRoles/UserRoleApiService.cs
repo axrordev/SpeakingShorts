@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Axidel.Domain.Entities.Users;
-using Axidel.Service.Configurations;
-using Axidel.Service.Services.UserRoles;
+using SpeakingShorts.Domain.Entities.Users;
+using SpeakingShorts.Service.Configurations;
+using SpeakingShorts.Service.Services.UserRoles;
 using SpeakingShorts.WebApi.Models.UserRoles;
 
 namespace SpeakingShorts.WebApi.ApiService.UserRoles;
@@ -16,7 +16,7 @@ public class UserRoleApiService(IUserRoleService userRoleService, IMapper mapper
 
     public async ValueTask<UserRoleViewModel> UpdateAsync(long id, UserRoleUpdateModel updateModel)
     {
-        var updatedUserRole = await userRoleService.UpdateAsync(id, mapper.Map<UserRole>(updateModel));
+        var updatedUserRole = await userRoleService.ModifyAsync(id, mapper.Map<UserRole>(updateModel));
         return mapper.Map<UserRoleViewModel>(updatedUserRole);
     }
 

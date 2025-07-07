@@ -14,7 +14,13 @@ public class StoryService(IUnitOfWork unitOfWork) : IStoryService
     {
         public async ValueTask<Story> CreateAsync(Story story)
         {
-            story.CreatedById = HttpContextHelper.GetUserId;
+            var userId = HttpContextHelper.GetUserId;
+            if (userId == null || userId == 0)
+            {
+                // Login qilmagan foydalanuvchi uchun xabar qaytarish
+                throw new UnauthorizedAccessException("Please log in !");
+            }
+            story.CreatedById = userId;
 
             var createdStory = await unitOfWork.StoryRepository.InsertAsync(story);
             await unitOfWork.SaveAsync();
@@ -27,6 +33,7 @@ public class StoryService(IUnitOfWork unitOfWork) : IStoryService
                 ?? throw new NotFoundException("Story not found");
 
             existStory.Title = story.Title;
+            existStory.Text = story.Text;
             existStory.UpdatedById = HttpContextHelper.GetUserId;
             existStory.UpdatedAt = DateTime.UtcNow;
 

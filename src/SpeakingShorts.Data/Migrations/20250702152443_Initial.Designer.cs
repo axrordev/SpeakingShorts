@@ -12,7 +12,7 @@ using SpeakingShorts.Data.DbContexts;
 namespace SpeakingShorts.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250622111758_Initial")]
+    [Migration("20250702152443_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -111,58 +111,6 @@ namespace SpeakingShorts.Data.Migrations
                     b.ToTable("Assets");
                 });
 
-            modelBuilder.Entity("SpeakingShorts.Domain.Entities.BackgroundMusic", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long?>("DeletedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FileKey")
-                        .HasColumnType("text");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("FileUrl")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long?>("UpdatedById")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BackgroundMusics");
-                });
-
             modelBuilder.Entity("SpeakingShorts.Domain.Entities.Comment", b =>
                 {
                     b.Property<long>("Id")
@@ -218,12 +166,6 @@ namespace SpeakingShorts.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("BackgroundMusicId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("BackgroundMusicId1")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -260,9 +202,6 @@ namespace SpeakingShorts.Data.Migrations
                     b.Property<bool>("IsTopContent")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ResultFileKey")
-                        .HasColumnType("text");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -282,10 +221,6 @@ namespace SpeakingShorts.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BackgroundMusicId");
-
-                    b.HasIndex("BackgroundMusicId1");
 
                     b.HasIndex("UserId");
 
@@ -404,11 +339,8 @@ namespace SpeakingShorts.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsPublished")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("PublishedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -634,14 +566,14 @@ namespace SpeakingShorts.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6734),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9671),
                             IsDeleted = false,
                             Name = "admin"
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2025, 6, 22, 11, 17, 57, 505, DateTimeKind.Utc).AddTicks(6736),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9672),
                             IsDeleted = false,
                             Name = "user"
                         });
@@ -718,22 +650,11 @@ namespace SpeakingShorts.Data.Migrations
 
             modelBuilder.Entity("SpeakingShorts.Domain.Entities.Content", b =>
                 {
-                    b.HasOne("SpeakingShorts.Domain.Entities.BackgroundMusic", "BackgroundMusic")
-                        .WithMany()
-                        .HasForeignKey("BackgroundMusicId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("SpeakingShorts.Domain.Entities.BackgroundMusic", null)
-                        .WithMany("Contents")
-                        .HasForeignKey("BackgroundMusicId1");
-
                     b.HasOne("SpeakingShorts.Domain.Entities.Users.User", "User")
                         .WithMany("Contents")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("BackgroundMusic");
 
                     b.Navigation("User");
                 });
@@ -833,11 +754,6 @@ namespace SpeakingShorts.Data.Migrations
                     b.Navigation("Content");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SpeakingShorts.Domain.Entities.BackgroundMusic", b =>
-                {
-                    b.Navigation("Contents");
                 });
 
             modelBuilder.Entity("SpeakingShorts.Domain.Entities.Content", b =>

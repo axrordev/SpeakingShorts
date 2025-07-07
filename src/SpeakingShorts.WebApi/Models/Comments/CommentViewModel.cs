@@ -8,6 +8,6 @@ public class CommentViewModel
 {
     public long Id { get; set; }
     public UserViewModel User { get; set; }
-    public ContentViewModel Content { get; set; }
+    public long ContentId { get; set; }
     public string Text { get; set; }
 }

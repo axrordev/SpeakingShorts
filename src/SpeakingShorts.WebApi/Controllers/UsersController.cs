@@ -6,7 +6,7 @@ using SpeakingShorts.WebApi.Models.Commons;
 using SpeakingShorts.WebApi.Models.Users;
 
 namespace SpeakingShorts.WebApi.Controllers;
-
+[Authorize]
 public class UsersController(IUserApiService userApiService) : BaseController
 {
     [HttpPut("{id:long}")]
@@ -71,6 +71,7 @@ public class UsersController(IUserApiService userApiService) : BaseController
     }
 
     [HttpPatch("change-role")]
+    [Authorize(Roles = "admin")]
     public async ValueTask<IActionResult> ChangeRoleAsync(long userId, long roleId)
     {
         return Ok(new Response
