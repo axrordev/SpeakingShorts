@@ -57,6 +57,7 @@ public class AccountService(IUnitOfWork unitOfWork, IMemoryCache memoryCache) : 
 
     public async ValueTask<(User user, string token)> LoginAsync(string email, string password)
     {
+        // 📌 SuperAdmin login
         if (EnvironmentHelper.SuperAdminLogin == email && EnvironmentHelper.SuperAdminPassword == password)
         {
             var superAdminRole = await unitOfWork.UserRoleRepository
@@ -69,20 +70,21 @@ public class AccountService(IUnitOfWork unitOfWork, IMemoryCache memoryCache) : 
                 UserRoleId = superAdminRole.Id,
                 Email = EnvironmentHelper.SuperAdminLogin
             };
-            return (user, token: AuthHelper.GenerateToken(-1, EnvironmentHelper.SuperAdminLogin, "SuperAdmin"));
+
+            return (user, AuthHelper.GenerateToken(user.Id, user.Email, superAdminRole.Name));
         }
-        else
-        {
-            var existUser = await unitOfWork.UserRepository
-                .SelectAsync(expression: user => user.Email == email, includes: ["UserRole"])
+
+        // 📌 Oddiy user login
+        var existUser = await unitOfWork.UserRepository
+            .SelectAsync(user => user.Email == email, includes: ["UserRole"])
             ?? throw new ForbiddenException("Email or Password is invalid");
 
-            if (!PasswordHasher.Verify(password, existUser.PasswordHash))
-                throw new ForbiddenException("Email or Password is invalid");
+        if (!PasswordHasher.Verify(password, existUser.PasswordHash))
+            throw new ForbiddenException("Email or Password is invalid");
 
-            return (user: existUser, token: AuthHelper.GenerateToken(existUser.Id, existUser.Email, existUser.UserRole.Name));
-        }
+        return (existUser, AuthHelper.GenerateToken(existUser.Id, existUser.Email, existUser.UserRole.Name));
     }
+
 
     public async ValueTask<bool> SendCodeAsync(string email)
     {

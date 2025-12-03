@@ -1,85 +1,93 @@
 ﻿using Microsoft.EntityFrameworkCore;
-  using Microsoft.OpenApi.Models;
-  using SpeakingShorts.Data.DbContexts;
-  using SpeakingShorts.Data.UnitOfWorks;
-  using SpeakingShorts.Service.Configurations;
-  using SpeakingShorts.Service.Services.BackblazeServices;
-  using SpeakingShorts.Service.Services.Infrastructure.Utilities;
-  using SpeakingShorts.Service.Services.WeeklyRankings;
-  using SpeakingShorts.WebApi.ApiService.Accounts;
-  using SpeakingShorts.WebApi.Extensions;
-  using SpeakingShorts.WebApi.MappingProfile;
+using SpeakingShorts.Data.DbContexts;
+using SpeakingShorts.Service.Configurations;
+using SpeakingShorts.Service.Services.BackblazeServices;
+using SpeakingShorts.Service.Services.Infrastructure.Utilities;
+using SpeakingShorts.Service.Services.WeeklyRankings;
+using SpeakingShorts.WebApi.Extensions;
+using SpeakingShorts.WebApi.MappingProfile;
+using SpeakingShorts.WebApi.Seeding;
 
-  var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-  // 🔹 Services
-  builder.Services.AddControllers();
-  builder.Services.AddEndpointsApiExplorer();
+// 📌 Timeweb konteyner ichida 80-portni tinglash uchun
+builder.WebHost.UseUrls("http://+:80");
 
-  // ✅ Swagger sozlash
-  builder.Services.AddSwaggerGen(c =>
-  {
-      c.SwaggerDoc("v1", new OpenApiInfo
-      {
-          Title = "SpeakingShorts API",
-          Version = "v1"
-      });
-  });
+// 🔹 Services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
-  // ✅ PostgreSQL uchun DB context
-  builder.Services.AddDbContext<AppDbContext>(options =>
-      options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// ✅ PostgreSQL uchun DB context
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-  // AutoMapper konfiguratsiyasi
-  builder.Services.AddAutoMapper(typeof(MappingProfile));
+// AutoMapper konfiguratsiyasi
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-  // ✅ Custom Services
-  builder.Services.AddServices(builder.Configuration);
-  builder.Services.AddApiServices();
+// ✅ Custom Services
+builder.Services.AddServices(builder.Configuration);
+builder.Services.AddApiServices();
 
-  // Hosted Service
-  builder.Services.AddHostedService<WeeklyRankingJob>();
+// Hosted Service
+builder.Services.AddHostedService<WeeklyRankingJob>();
 
-  // Singleton xizmatlar
-  builder.Services.AddSingleton<ISystemTime, SystemTime>();
+// Singleton xizmatlar
+builder.Services.AddSingleton<ISystemTime, SystemTime>();
 
-  // Validatorlarni qo'shish
-  builder.Services.AddValidators();
+// Validatorlarni qo'shish
+builder.Services.AddValidators();
 
-  // Swagger konfiguratsiyasi va xizmatlari
-  builder.Services.AddEndpointsApiExplorer();
-  builder.Services.ConfigureSwagger();
+// ✅ Swagger konfiguratsiyasi (faqat ConfigureSwagger)
+builder.Services.ConfigureSwagger();
 
-  // JWT autentifikatsiyasini qo'shish
-  builder.Services.AddJwt(builder.Configuration);
+// JWT autentifikatsiyasini qo'shish
+builder.Services.AddJwt(builder.Configuration);
 
-  // HTTP kontekst uchun qo'llanma
-  builder.Services.AddHttpContextAccessor();
+// HTTP kontekst uchun qo'llanma
+builder.Services.AddHttpContextAccessor();
+// CORS siyosatini qo'shish (frontend URL'ini qo'shing)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("https://speakingshorts.uz")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
-  // ✅ Backblaze konfiguratsiya va servis
-  builder.Services.Configure<BackblazeSettings>(builder.Configuration.GetSection("Backblaze"));
-  builder.Services.AddSingleton<IBackblazeService, BackblazeService>();
+// ✅ Backblaze konfiguratsiya va servis
+builder.Services.Configure<BackblazeSettings>(builder.Configuration.GetSection("Backblaze"));
+builder.Services.AddSingleton<IBackblazeService, BackblazeService>();
 
-  // Xatolikni boshqarish (Exception middleware'lari)
-  builder.Services.AddExceptions();
+// Xatolikni boshqarish (Exception middleware'lari)
+builder.Services.AddExceptions();
 
-  var app = builder.Build();
+var app = builder.Build();
 
-  // CORS siyosatini ishlatish
-  app.UseCors("AllowSpecificOrigin");
+// Ma’lumotlar bazasini init qilish
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbInitializer.SeedAsync(dbContext, builder.Configuration);
+}
 
-  // Qo'shimcha yordamchi funksiyalarni sozlash
-  app.AddInjectHelper();
-  app.AddPathInitializer();
+// CORS siyosatini ishlatish
+app.UseCors("AllowSpecificOrigin");
 
-  // 🔹 Middleware
-  app.UseSwagger(); // Swagger har doim ochilsin
-  app.UseSwaggerUI(c =>
-  {
-      c.SwaggerEndpoint("/swagger/v1/swagger.json", "SpeakingShorts API V1");
-  });
+// Qo'shimcha yordamchi funksiyalarni sozlash
+app.AddInjectHelper();
+app.AddPathInitializer();
 
-  app.UseHttpsRedirection();
-  app.UseAuthorization();
-  app.MapControllers();
-  app.Run();
+// 🔹 Middleware
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SpeakingShorts API V1");
+});
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.Run();

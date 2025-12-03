@@ -140,31 +140,44 @@ public static class ServicesCollectionExtension
 
      public static void ConfigureSwagger(this IServiceCollection services)
     {
-        services.AddSwaggerGen(setup =>
+        services.AddSwaggerGen(c =>
         {
-            // JWT autentifikatsiyasi uchun Swagger konfiguratsiyasi
-            var jwtSecurityScheme = new OpenApiSecurityScheme
+            c.SwaggerDoc("v1", new OpenApiInfo
             {
-                BearerFormat = "JWT",
-                Name = "JWT Authentication",
+                Title = "SpeakingShorts API",
+                Version = "v1",
+                Description = "API for SpeakingShorts application"
+            });
+
+            // JWT Bearer auth configuration
+            var securityScheme = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Enter JWT Bearer token **_without Bearer prefix_**",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
+                Scheme = "bearer",
+                BearerFormat = "JWT",
                 Reference = new OpenApiReference
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
             };
 
-            setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+            // Add security definition
+            c.AddSecurityDefinition("Bearer", securityScheme);
 
-            setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+            // Add security requirement
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    { jwtSecurityScheme, Array.Empty<string>() }
-                });        
+                    securityScheme,
+                    Array.Empty<string>()
+                }
+            });
         });
     }
+
+
 }

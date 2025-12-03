@@ -17,7 +17,7 @@ namespace SpeakingShorts.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -563,14 +563,14 @@ namespace SpeakingShorts.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9671),
+                            CreatedAt = new DateTime(2025, 7, 31, 15, 37, 33, 960, DateTimeKind.Utc).AddTicks(7776),
                             IsDeleted = false,
                             Name = "admin"
                         },
                         new
                         {
                             Id = 2L,
-                            CreatedAt = new DateTime(2025, 7, 2, 15, 24, 42, 171, DateTimeKind.Utc).AddTicks(9672),
+                            CreatedAt = new DateTime(2025, 7, 31, 15, 37, 33, 960, DateTimeKind.Utc).AddTicks(7777),
                             IsDeleted = false,
                             Name = "user"
                         });
