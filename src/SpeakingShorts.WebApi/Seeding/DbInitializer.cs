@@ -21,7 +21,7 @@ namespace SpeakingShorts.WebApi.Seeding
                 {
                     context.UserRoles.Add(new UserRole
                     {
-                        Name = roleName,
+                         Name = roleName,
                         CreatedAt = DateTime.UtcNow,
                         IsDeleted = false
                     });

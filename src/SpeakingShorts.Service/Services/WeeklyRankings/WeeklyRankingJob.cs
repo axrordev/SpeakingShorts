@@ -19,29 +19,50 @@
               _logger = logger ?? throw new ArgumentNullException(nameof(logger));
           }
 
-          protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-          {
-              while (!stoppingToken.IsCancellationRequested)
-              {
-                  var now = DateTime.UtcNow; // ISystemTime dan foydalanish uchun DI'dan olish mumkin
-                  if (now.DayOfWeek == DayOfWeek.Monday && now.Hour == 0 && now.Minute == 0)
-                  {
-                      try
-                      {
-                          using (var scope = _serviceScopeFactory.CreateScope())
-                          {
-                              var weeklyRankingService = scope.ServiceProvider.GetRequiredService<IWeeklyRankingService>();
-                              await weeklyRankingService.GenerateWeeklyRankingsAsync();
-                              _logger.LogInformation("Weekly rankings generated at {Time}", now);
-                          }
-                      }
-                      catch (Exception ex)
-                      {
-                          _logger.LogError(ex, "Error generating weekly rankings");
-                      }
-                  }
-                  await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-              }
-          }
+         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+            {
+                try
+                {
+                    while (!stoppingToken.IsCancellationRequested)
+                    {
+                        var now = DateTime.UtcNow;
+
+                        if (now.DayOfWeek == DayOfWeek.Monday &&
+                            now.Hour == 0 &&
+                            now.Minute == 0)
+                        {
+                            try
+                            {
+                                using (var scope = _serviceScopeFactory.CreateScope())
+                                {
+                                    var weeklyRankingService =
+                                        scope.ServiceProvider.GetRequiredService<IWeeklyRankingService>();
+
+                                    await weeklyRankingService.GenerateWeeklyRankingsAsync();
+                                    _logger.LogInformation("Weekly rankings generated at {Time}", now);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // ❗ job ichidagi xato
+                                _logger.LogError(ex, "Error generating weekly rankings");
+                            }
+                        }
+
+                        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    // normal shutdown (app o‘chayotganda)
+                    _logger.LogInformation("WeeklyRankingJob stopped");
+                }
+                catch (Exception ex)
+                {
+                    // ❗❗ eng muhim joy — endi API yiqilmaydi
+                    _logger.LogCritical(ex, "WeeklyRankingJob crashed");
+                }
+            }
+
       }
   }

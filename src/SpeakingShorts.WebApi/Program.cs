@@ -10,8 +10,8 @@ using SpeakingShorts.WebApi.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 📌 Timeweb konteyner ichida 80-portni tinglash uchun
-builder.WebHost.UseUrls("http://+:80");
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
 
 // 🔹 Services
 builder.Services.AddControllers();
@@ -38,7 +38,7 @@ builder.Services.AddSingleton<ISystemTime, SystemTime>();
 builder.Services.AddValidators();
 
 // ✅ Swagger konfiguratsiyasi (faqat ConfigureSwagger)
-builder.Services.ConfigureSwagger();
+builder.Services.ConfigureSwagger(); 
 
 // JWT autentifikatsiyasini qo'shish
 builder.Services.AddJwt(builder.Configuration);
