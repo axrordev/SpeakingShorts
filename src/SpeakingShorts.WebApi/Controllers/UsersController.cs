@@ -71,7 +71,7 @@ public class UsersController(IUserApiService userApiService) : BaseController
     }
 
     [HttpPatch("change-role")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     public async ValueTask<IActionResult> ChangeRoleAsync(long userId, long roleId)
     {
         return Ok(new Response

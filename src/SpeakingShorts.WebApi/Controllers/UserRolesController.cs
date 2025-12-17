@@ -8,7 +8,7 @@ using SpeakingShorts.WebApi.Models.UserRoles;
 
 namespace SpeakingShorts.WebApi.Controllers;
 
-[Authorize(Roles = "admin")]
+[Authorize(Roles = "admin, superadmin")]
 public class UserRolesController(IUserRoleApiService userRoleApiService) : BaseController
 {
     [HttpPost]

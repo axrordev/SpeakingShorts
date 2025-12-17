@@ -9,7 +9,7 @@ namespace SpeakingShorts.WebApi.Controllers;
 
 public class AnnouncementsController(IAnnouncementApiService announcementApiService) : BaseController
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpPost]
     public async ValueTask<IActionResult> CreateAsync([FromBody] AnnouncementCreateModel model)
         => Ok(new Response
@@ -19,7 +19,7 @@ public class AnnouncementsController(IAnnouncementApiService announcementApiServ
             Data = await announcementApiService.CreateAsync(model)
         });
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] AnnouncementModifyModel model)
         => Ok(new Response
@@ -29,7 +29,7 @@ public class AnnouncementsController(IAnnouncementApiService announcementApiServ
             Data = await announcementApiService.ModifyAsync(id, model)
         });
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
         => Ok(new Response

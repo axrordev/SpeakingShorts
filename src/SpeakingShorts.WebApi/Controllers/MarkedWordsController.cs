@@ -10,7 +10,7 @@ namespace SpeakingShorts.WebApi.Controllers;
 
 public class MarkedWordsController(IMarkedWordApiService markedWordApiService) : BaseController
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpPost]
     public async ValueTask<IActionResult> CreateAsync([FromBody] MarkedWordCreateModel model)
         => Ok(new Response
@@ -20,7 +20,7 @@ public class MarkedWordsController(IMarkedWordApiService markedWordApiService) :
             Data = await markedWordApiService.CreateAsync(model)
         });
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> UpdateAsync([FromRoute] long id, [FromBody] MarkedWordModifyModel model)
         => Ok(new Response
@@ -30,7 +30,7 @@ public class MarkedWordsController(IMarkedWordApiService markedWordApiService) :
             Data = await markedWordApiService.ModifyAsync(id, model)
         });
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> DeleteAsync([FromRoute] long id)
         => Ok(new Response
